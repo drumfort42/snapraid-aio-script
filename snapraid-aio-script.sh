@@ -158,6 +158,12 @@ function main(){
   mklog "INFO: Checking SnapRAID disks"
   sanity_check
 
+  # Custom Hook - Before
+  if [ "$CUSTOM_HOOK" -eq 1 ]; then
+    echo "### Custom Hook [$BEFORE_HOOK_NAME]";
+    bash -c "$BEFORE_HOOK_CMD"
+  fi
+
   # pause configured containers
   if [ "$MANAGE_SERVICES" -eq 1 ]; then
     service_array_setup
@@ -168,11 +174,6 @@ function main(){
     fi
   fi
 
-  # Custom Hook - Before
-  if [ "$CUSTOM_HOOK" -eq 1 ]; then
-    echo "### Custom Hook [$BEFORE_HOOK_NAME]";
-    bash -c "$BEFORE_HOOK_CMD"
-  fi
 
   echo "----------------------------------------"
   echo "## Processing"
@@ -341,6 +342,8 @@ fi
 
   # Custom Hook - After
   if [ "$CUSTOM_HOOK" -eq 1 ]; then
+    echo "Sleeping 30 sek to wait for container to wake up"
+    sleep 30
     echo "### Custom Hook - [$AFTER_HOOK_NAME]";
     bash -c "$AFTER_HOOK_CMD"
   fi
