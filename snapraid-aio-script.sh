@@ -30,7 +30,7 @@ source "$CONFIG_FILE"
   elif [ "$CONFIG_VERSION" != "$SNAPSCRIPTVERSION" ]; then
     echo "Please update your config file to the latest version. The current file is not compatible with this script!"
     mklog "WARN: Please update your config file to the latest version. The current file is not compatible with this script!"
-    SUBJECT="[WARNING] - Configuration Error $EMAIL_SUBJECT_PREFIX"
+    SUBJECT="[WARNING] - Configuration Error $EMAIL_SUBJECT_PREFIX @everyone"
     NOTIFY_OUTPUT="$SUBJECT"
     notify_warning
     if [ "$EMAIL_ADDRESS" ]; then
@@ -104,7 +104,7 @@ function main(){
   if pgrep -x snapraid >/dev/null; then
     echo "The script has detected SnapRAID is already running. Please check the status of the previous SnapRAID job before running this script again."
       mklog "WARN: The script has detected SnapRAID is already running. Please check the status of the previous SnapRAID job before running this script again."
-      SUBJECT="[WARNING] - SnapRAID already running $EMAIL_SUBJECT_PREFIX"
+      SUBJECT="[WARNING] - SnapRAID already running $EMAIL_SUBJECT_PREFIX @everyone"
       NOTIFY_OUTPUT="$SUBJECT"
       notify_warning
       if [ "$EMAIL_ADDRESS" ]; then
@@ -144,7 +144,7 @@ function main(){
     mklog "WARN: SnapRAID configuration file not found. The script cannot be run! Please check your settings, because the specified file "$SNAPRAID_CONF" does not exist."
 	SUBJECT="[WARNING] - SnapRAID configuration file not found!"
     FORMATTED_CONF="\`$SNAPRAID_CONF\`"
-	NOTIFY_OUTPUT="$SUBJECT The script cannot be run! Please check your settings, because the specified file $FORMATTED_CONF does not exist."
+	NOTIFY_OUTPUT="$SUBJECT The script cannot be run! Please check your settings, because the specified file $FORMATTED_CONF does not exist. @everyone"
     notify_warning
     if [ "$EMAIL_ADDRESS" ]; then
       trim_log < "$TMP_OUTPUT" | send_mail
@@ -204,7 +204,7 @@ function main(){
     echo "**ERROR** - Failed to get one or more count values. Unable to continue."
     mklog "WARN: Failed to get one or more count values. Unable to continue."
     echo "Exiting script. [$(date)]"
-    SUBJECT="[WARNING] - Unable to continue with SYNC/SCRUB job(s). Check DIFF job output. $EMAIL_SUBJECT_PREFIX"
+    SUBJECT="[WARNING] - Unable to continue with SYNC/SCRUB job(s). Check DIFF job output. $EMAIL_SUBJECT_PREFIX @everyone"
     NOTIFY_OUTPUT="$SUBJECT"
     notify_warning
     if [ "$EMAIL_ADDRESS" ]; then
@@ -398,7 +398,7 @@ function sanity_check() {
     mklog "WARN: Please check the status of your disks! The script exits here due to missing file or disk."
 
     # Add a topline to email body
-    SUBJECT="[WARNING] - Parity file ($i) not found! $EMAIL_SUBJECT_PREFIX"
+    SUBJECT="[WARNING] - Parity file ($i) not found! $EMAIL_SUBJECT_PREFIX @everyone"
     NOTIFY_OUTPUT="$SUBJECT"
     notify_warning
     if [ "$EMAIL_ADDRESS" ]; then
@@ -419,7 +419,7 @@ function sanity_check() {
       mklog "WARN: Please check the status of your disks! The script exits here due to missing file or disk."
 
       # Add a topline to email body
-      SUBJECT="[WARNING] - Content file ($i) not found! $EMAIL_SUBJECT_PREFIX"
+      SUBJECT="[WARNING] - Content file ($i) not found! $EMAIL_SUBJECT_PREFIX @everyone"
       NOTIFY_OUTPUT="$SUBJECT"
       notify_warning
       if [ "$EMAIL_ADDRESS" ]; then
@@ -758,13 +758,13 @@ function prepare_output() {
 # severe warning first
   if [ -z "${JOBS_DONE##*"SYNC"*}" ] && ! grep -qw "$SYNC_MARKER" "$TMP_OUTPUT"; then
     # Sync ran but did not complete successfully so lets warn the user
-    SUBJECT="[SEVERE WARNING] SYNC job ran but did not complete successfully $EMAIL_SUBJECT_PREFIX"
+    SUBJECT="[SEVERE WARNING] SYNC job ran but did not complete successfully $EMAIL_SUBJECT_PREFIX @everyone"
     NOTIFY_OUTPUT="$SUBJECT
 This is a severe warning, check your logs immediately."
     notify_warning
   elif [ -z "${JOBS_DONE##*"SCRUB"*}" ] && ! grep -qw "$SCRUB_MARKER" "$TMP_OUTPUT"; then
     # Scrub ran but did not complete successfully so lets warn the user
-    SUBJECT="[SEVERE WARNING] SCRUB job ran but did not complete successfully $EMAIL_SUBJECT_PREFIX"
+    SUBJECT="[SEVERE WARNING] SCRUB job ran but did not complete successfully $EMAIL_SUBJECT_PREFIX @everyone"
     NOTIFY_OUTPUT="$SUBJECT
 	
 This is a severe warning, check your logs immediately.
@@ -812,7 +812,7 @@ SUMMARY: Equal [$EQ_COUNT] - Added [$ADD_COUNT] - Deleted [$DEL_COUNT] - Moved [
 		  MSG="Sync forced with multiple violations - Deleted files ($DEL_COUNT) / ($DEL_THRESHOLD), add/delete ratio ($ADD_DEL_RATIO) / ($ADD_DEL_THRESHOLD), and changed files ($UPDATE_COUNT) / ($UP_THRESHOLD)"
 		fi
     fi
-    SUBJECT="[WARNING] $MSG $EMAIL_SUBJECT_PREFIX"
+    SUBJECT="[WARNING] $MSG $EMAIL_SUBJECT_PREFIX @everyone"
     NOTIFY_OUTPUT="$SUBJECT"
     notify_warning
 # else a good run, no warnings
@@ -1017,7 +1017,7 @@ elif [ $result -eq 2 ]; then
     mklog "WARN: Stopping the script due to multiple SnapRAID configuration files. Please choose up one config file and update your settings."
 	SUBJECT="[WARNING] - Multiple SnapRAID configuration files!"
     FORMATTED_CONF="\`$SNAPRAID_CONF\`"
-	NOTIFY_OUTPUT="$SUBJECT Stopping the script due to multiple SnapRAID configuration files. Please choose one config file and update your settings in the script-config file at ""$CONFIG_FILE""."
+	NOTIFY_OUTPUT="$SUBJECT Stopping the script due to multiple SnapRAID configuration files. Please choose one config file and update your settings in the script-config file at ""$CONFIG_FILE"". @everyone"
     notify_warning
     if [ "$EMAIL_ADDRESS" ]; then
       trim_log < "$TMP_OUTPUT" | send_mail
@@ -1030,7 +1030,7 @@ else
     mklog "WARN: SnapRAID configuration file not found. The script cannot be run! Please check your settings, because the specified file ""$SNAPRAID_CONF"" does not exist."
 	SUBJECT="[WARNING] - SnapRAID configuration file not found!"
     FORMATTED_CONF="\`$SNAPRAID_CONF\`"
-	NOTIFY_OUTPUT="$SUBJECT The script cannot be run! Please check your settings, because the specified file $FORMATTED_CONF does not exist."
+	NOTIFY_OUTPUT="$SUBJECT The script cannot be run! Please check your settings, because the specified file $FORMATTED_CONF does not exist. @everyone"
     notify_warning
     if [ "$EMAIL_ADDRESS" ]; then
       trim_log < "$TMP_OUTPUT" | send_mail
